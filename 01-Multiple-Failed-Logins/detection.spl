@@ -1,0 +1,6 @@
+index=windows_soc EventCode=4625 earliest=-5m latest=now
+| rex "Cuenta con error de inicio de sesión:[\s\S]*?Nombre de cuenta:\s+(?<account>\S+)"
+| rex "Dirección de red de origen:\s+(?<src_ip>\S+)"
+| bin _time span=5m
+| stats count by _time account src_ip
+| where count>=5
