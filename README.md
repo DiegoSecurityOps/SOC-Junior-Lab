@@ -4,7 +4,7 @@ Hands-on SOC Analyst lab focused on Splunk, Windows Security Events, incident tr
 
 ## About this lab
 
-This repository documents practical SOC Tier 1 investigations performed in a controlled lab environment.
+This repository documents practical SOC Analyst Tier 1 investigations performed in a controlled lab environment.
 
 The goal is to develop hands-on skills in:
 
