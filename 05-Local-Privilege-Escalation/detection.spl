@@ -1,0 +1,7 @@
+index=windows_soc EventCode=4732 earliest=-24h latest=now
+| rex "Sujeto:[\s\S]*?Nombre de cuenta:\s+(?<actor>\S+)"
+| rex "Miembro:[\s\S]*?Id\. de seguridad:\s+(?<member_sid>\S+)"
+| rex "Grupo:[\s\S]*?Nombre de grupo:\s+(?<group_name>[^\r\n]+)"
+| search group_name="Administradores"
+| table _time host actor member_sid group_name
+| sort - _time
