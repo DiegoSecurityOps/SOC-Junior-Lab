@@ -29,19 +29,12 @@ The goal is to develop hands-on skills in:
 
 ## Completed Investigations
 
-### Case 01 — Multiple Failed Logins Followed by Success
-Investigation of repeated Windows authentication failures followed by a successful interactive logon.
+- [Case 01 — Multiple Failed Logins Followed by Success](./01-Multiple-Failed-Logins/)
+- Case 02 — Suspicious PowerShell Execution
+- Case 03 — Local Account Creation
+- Case 04 — Suspicious Process Chain
+- [Case 05 — User Added to Local Administrators Group](./05-Local-Privilege-Escalation/)
 
-### Case 02 — Suspicious PowerShell Execution
-Analysis of PowerShell process creation, command-line arguments and suspicious execution indicators.
-
-### Case 03 — Local Account Creation
-Investigation of a newly created local account, account changes and subsequent successful logon activity.
-
-### Case 04 — Suspicious Process Chain
-Reconstruction and analysis of a process chain:
-
-`explorer.exe → cmd.exe → powershell.exe`
 
 ## Investigation Methodology
 
