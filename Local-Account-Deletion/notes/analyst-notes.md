@@ -18,7 +18,7 @@ The searches use Spanish Windows Security event labels, including:
 
 If the event format changes or English/XML rendering is used, the `rex` expressions may need to be adjusted.
 
-The lifetime calculation represents the observed event span in Splunk and should only be interpreted as the account lifecycle when:
+The lifetime calculation represents the observed event window in Splunk and should only be interpreted as the account lifecycle when:
 
 - Event ID 4720 is the first relevant event
 - Event ID 4726 is the last relevant event
@@ -33,7 +33,7 @@ The controlled laboratory activity showed:
 - Classification: `True Positive / Benign Activity`
 - Severity: `Low`
 
-These results were obtained during the original investigation.
+These findings were obtained during the original investigation.
 
 ## Publication Status
 
