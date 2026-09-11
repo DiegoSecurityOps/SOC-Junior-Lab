@@ -1,0 +1,4 @@
+index=windows_soc "SOC_CASE08" earliest=-24h latest=now
+(EventCode=4720 OR EventCode=4722 OR EventCode=4738 OR EventCode=4798 OR EventCode=4726)
+| table _time EventCode host
+| sort _time
