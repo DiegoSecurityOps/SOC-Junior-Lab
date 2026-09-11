@@ -1,0 +1,5 @@
+index=windows_soc EventCode=4726 earliest=-24h latest=now
+| rex "Sujeto:[\s\S]*?Nombre de cuenta:\s+(?<actor_account>\S+)"
+| rex "Cuenta de destino:[\s\S]*?Nombre de cuenta:\s+(?<target_account>\S+)"
+| table _time EventCode actor_account target_account host
+| sort _time
