@@ -1,0 +1,10 @@
+index=windows_soc host="SOC-WS01" EventCode=4724 earliest="09/10/2026:00:00:00" latest="09/11/2026:00:00:00"
+| rex field=_raw "Sujeto:[\s\S]*?Nombre de cuenta:\s+(?<actor_account>\S+)"
+| rex field=_raw "Cuenta de destino:[\s\S]*?Nombre de cuenta:\s+(?<target_account>\S+)"
+| search target_account="SOC_CASE09"
+| sort 0 _time
+| streamstats current=f last(_time) as previous_reset_time last(actor_account) as previous_actor by host target_account
+| where isnotnull(previous_reset_time)
+| eval interval_seconds=round(_time-previous_reset_time,3)
+| eval previous_reset=strftime(previous_reset_time,"%Y-%m-%d %H:%M:%S.%3N"), current_reset=strftime(_time,"%Y-%m-%d %H:%M:%S.%3N")
+| table host target_account previous_actor actor_account previous_reset current_reset interval_seconds

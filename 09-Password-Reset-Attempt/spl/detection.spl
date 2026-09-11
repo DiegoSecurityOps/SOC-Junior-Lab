@@ -1,0 +1,6 @@
+index=windows_soc host="SOC-WS01" EventCode=4724 earliest="09/10/2026:00:00:00" latest="09/11/2026:00:00:00"
+| rex field=_raw "Sujeto:[\s\S]*?Nombre de cuenta:\s+(?<actor_account>\S+)"
+| rex field=_raw "Cuenta de destino:[\s\S]*?Nombre de cuenta:\s+(?<target_account>\S+)"
+| search target_account="SOC_CASE09"
+| sort 0 _time
+| table _time EventCode actor_account target_account host
