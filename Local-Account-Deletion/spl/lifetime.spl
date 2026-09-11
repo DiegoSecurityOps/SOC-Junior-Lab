@@ -1,0 +1,7 @@
+index=windows_soc "SOC_CASE08" earliest=-24h latest=now
+(EventCode=4720 OR EventCode=4722 OR EventCode=4738 OR EventCode=4798 OR EventCode=4726)
+| stats min(_time) as first_seen max(_time) as last_seen
+| eval duration_seconds=last_seen-first_seen
+| eval first_seen=strftime(first_seen,"%Y-%m-%d %H:%M:%S")
+| eval last_seen=strftime(last_seen,"%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen duration_seconds
