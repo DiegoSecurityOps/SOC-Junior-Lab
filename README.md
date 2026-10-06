@@ -78,3 +78,7 @@ Examples:
 ## Disclaimer
 
 All activity documented in this repository was performed in a controlled lab environment for educational and defensive security purposes.
+
+## Endpoint Hardening Review
+
+- [Case 11 — Windows Endpoint Hardening Review](./11-Windows-Endpoint-Hardening/)
