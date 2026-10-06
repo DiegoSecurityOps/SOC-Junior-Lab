@@ -49,6 +49,31 @@ The baseline and neighbor checks are documented as workflow steps; a complete sa
 
 An Edge process was associated with a connection to sanitized destination `192.0.2.20:8009`. The recorded analysis linked Edge PID 16612 to parent Edge PID 11504, whose creation event showed Edge parent PID 9988. A different historical event used PID 9988 for splunk-netmon.exe; it was not evidence that Splunk launched Edge. PID reuse made timestamp and process context essential. The search for the originating creation of the relevant Edge PID 9988 returned no results, leaving the ancestry incomplete. Port number alone did not establish the destination's purpose.
 
+## Privilege Auditing Validation
+
+In the follow-up practice, I checked `Uso de privilegio confidencial` with auditpol. Its initial state was `Sin auditoría`. I enabled success auditing with `auditpol /set /subcategory:"Uso de privilegio confidencial" /success:enable`, then checked it again. The subsequent state was confirmed as `Aciertos`. These actions were performed during the recorded practice; no endpoint commands were rerun for this update.
+
+| Field | Recorded value, sanitized where needed |
+| --- | --- |
+| EventCode / index | 4674 / windows_soc |
+| Account | lab_analyst |
+| Host / account domain | SOC-WS01 |
+| SID | <SID_REDACTED> |
+| Process | C:\Windows\System32\lsass.exe |
+| PID | 0x4e8 (1256 decimal) |
+| Privilege | SeSecurityPrivilege |
+| Object server | LSA |
+
+`Get-Process -Id 1256 | Select-Object Name,Id,Path` returned `lsass`, ID `1256`, and an empty Path. The full path came from the 4674 event. Other sensitive identifiers and account-specific timestamps are omitted.
+
+I used `rex` to extract the account, process ID, process name and privilege into a readable table. I then searched for EventCode 4674 and 4688 in a 30-minute window, extracted their process IDs and filtered for `0x4e8`. Only 4674 appeared; no matching 4688 was found. The recorded searches are in [related-searches.spl](spl/related-searches.spl).
+
+The active-process check linked PID 1256 to lsass, but did not establish its historical creation time. The interpretation was that lsass.exe probably started much earlier, outside the window. This is a probable explanation, not a verified startup timestamp. The absence of 4688 does not invalidate the investigation or prove an auditing failure. Host, time and process context matter because PIDs can be reused.
+
+**Classification: TP / Benign.** The privileged activity was real, and the LSA/LSASS context was treated as expected in this lab. This classification applies to the reviewed activity; a process name/path alone does not prove authenticity or that the whole endpoint is safe.
+
+My lesson: **if the endpoint does not audit an activity, the SIEM cannot see it through that audit telemetry.** The practice connected audit policy, recorded activity, Splunk ingestion and investigation. An unsuccessful historical correlation can leave a gap in the available evidence.
+
 ## Recommendations — not applied
 
 - Review Delivery Optimization requirements and restrict inbound profiles/scope where appropriate.
@@ -63,7 +88,7 @@ An Edge process was associated with a connection to sanitized destination `192.0
 
 No evident indicators of compromise were identified during the review. This limited observation does not establish that the endpoint is free of compromise. The main opportunities were Delivery Optimization inbound access in `Any`, enabled lab accounts, SOC_LAB administrative privileges, no enforced minimum password length/history, and partial auditing.
 
-I practiced moving from an unfamiliar connection or service to evidence and context before recommending a change. Remediation and the later audit → activity → Splunk exercise remain follow-up work.
+I practiced moving from an unfamiliar connection or service to evidence and context before recommending a change. The follow-up audit → activity → Splunk exercise validated sensitive privilege-use telemetry. Other hardening recommendations remain follow-up work.
 
 ## Supporting files
 
