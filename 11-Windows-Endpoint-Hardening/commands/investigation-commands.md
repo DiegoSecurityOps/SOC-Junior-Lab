@@ -119,3 +119,16 @@ Defender reports protection state. Account/group queries report enabled users an
 `Listen`: waiting TCP listener. `Established`: active TCP connection. `PID` / `OwningProcess`: transient process identifier. `Inbound` / `Outbound`: traffic direction. `Allow`: rule action. `Any`: all firewall profiles in the observed Profile field. `0.0.0.0` / `::`: all IPv4 / IPv6 interfaces. `127.0.0.1` / `::1`: loopback.
 
 Observed correlations: TCP 8000/8089 → splunkd; 5432 → Splunk's postgres; 7680 → DoSvc; 135 → RPC services; 139/445 → System. Port 8009 was the Edge connection destination; its number does not establish service identity. Other listeners were present but were not fully attributed, so this case does not classify them by number alone.
+
+## Recorded privilege auditing validation
+
+The Spanish Windows subcategory changed from `Sin auditoría` to `Aciertos` during the recorded practice. The change was made from an elevated console. These are historical commands, not a new execution for this update.
+
+```powershell
+auditpol /get /subcategory:"Uso de privilegio confidencial"
+auditpol /set /subcategory:"Uso de privilegio confidencial" /success:enable
+auditpol /get /subcategory:"Uso de privilegio confidencial"
+Get-Process -Id 1256 | Select-Object Name,Id,Path
+```
+
+The process check returned `lsass`, Id `1256`, and an empty Path. The event supplied the full System32 path. `0x4e8` equals 1256 decimal; this PID belongs to the historical snapshot.
