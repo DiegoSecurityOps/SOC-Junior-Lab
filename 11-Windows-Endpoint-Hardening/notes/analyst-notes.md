@@ -19,7 +19,7 @@ The full host baseline, neighbor inventory and all raw exports are not reproduce
 
 The network profile changed from Public to Private in the recorded practice and the firewall remained enabled on all three profiles. That change is not a general hardening recommendation: Private can permit more local functions and requires a trusted network context.
 
-The follow-up exercise to configure auditing, generate activity and inspect Windows/Splunk events was deferred. The related SPL file separates the recorded 4688 investigation pattern from additional unexecuted follow-up searches.
+The follow-up privilege-auditing exercise was completed: Sin auditoría changed to Aciertos, Splunk detected 4674, and rex extracted the fields. PID 0x4e8 (1256) was linked to active lsass. No matching 4688 was found in 30 minutes; earlier startup remains probable, not verified. Classification: TP / Benign. The SPL file distinguishes recorded searches from broader unexecuted follow-up searches.
 
 ## Review before merge
 
