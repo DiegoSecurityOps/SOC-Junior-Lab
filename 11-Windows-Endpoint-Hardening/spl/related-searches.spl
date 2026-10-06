@@ -1,0 +1,25 @@
+``` This file contains separate searches, not one pipeline. ```
+``` Adapt index, host mapping and time range. SOC-WS01 is a sanitized hostname and may not exist in the actual index. ```
+``` Recorded 4688 investigation pattern, with Spanish rendered-event extraction. The ancestry remained incomplete. ```
+index=windows_soc EventCode=4688 earliest="10/05/2026:12:12:00" latest="10/05/2026:12:16:00"
+| eval endpoint=coalesce(ComputerName,host)
+| search endpoint="SOC-WS01"
+| rex "Identificador del nuevo proceso:\s+(?<new_pid>0x[0-9A-Fa-f]+)"
+| rex "Nombre del nuevo proceso:\s+(?<new_process>[^\r\n]+)"
+| rex "Identificador del proceso creador:\s+(?<parent_pid>0x[0-9A-Fa-f]+)"
+| rex "Nombre del proceso creador:\s+(?<parent_process>[^\r\n]+)"
+| search new_pid="0x2cf0" new_process="*msedge.exe*"
+| table _time endpoint new_pid new_process parent_pid parent_process
+
+``` Related follow-up only: not executed or validated for Case 11. Counts do not prove audit-policy coverage. ```
+index=windows_soc earliest=-24h latest=now EventCode IN (4624,4625,4740,4688,4720,4725,4726,4732,4733,4719)
+| eval endpoint=coalesce(ComputerName,host)
+| search endpoint="SOC-WS01"
+| stats count min(_time) as first_seen max(_time) as last_seen by endpoint EventCode
+| convert ctime(first_seen) ctime(last_seen)
+
+``` Related privilege-use follow-up only: unexecuted. No matches may reflect audit configuration, ingestion, time range or no relevant activity. ```
+index=windows_soc earliest=-24h latest=now EventCode IN (4673,4674)
+| eval endpoint=coalesce(ComputerName,host)
+| search endpoint="SOC-WS01"
+| table _time endpoint EventCode
