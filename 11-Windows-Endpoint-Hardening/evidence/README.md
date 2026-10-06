@@ -79,3 +79,9 @@ Recorded coverage included logon success/failure, logoff success, account lockou
 ## Publication sanitization
 
 Host and personal account names are replaced with SOC-WS01 and lab_analyst. Real private addresses use 192.0.2.x replacements; IPv6 identifiers are omitted. MAC values are omitted or represented as `<MAC_REDACTED>`. SIDs and sensitive identifiers are omitted or redacted. No router, ISP, credentials, Product ID, network names or household inventory is included. No synthetic screenshot or fabricated raw output is presented as evidence.
+
+## E07 — Follow-up privilege auditing
+
+Selected sanitized summary from the subsequent practice: initial `Uso de privilegio confidencial = Sin auditoría`; success auditing enabled; subsequent state `Aciertos`. Splunk index `windows_soc`, EventCode `4674`, account `lab_analyst`, host/domain `SOC-WS01`, SID `<SID_REDACTED>`, process `C:\Windows\System32\lsass.exe`, PID `0x4e8` (1256 decimal), privilege `SeSecurityPrivilege`, object server `LSA`. PowerShell confirmed active `lsass` / 1256 with Path empty. The rex table was confirmed; the 30-minute correlation search returned 4674 without a matching 4688. Classification: **TP / Benign**.
+
+Earlier lsass startup is a probable explanation, not a verified timestamp. Account-specific times and other sensitive identifiers are omitted. This is a summary of recorded evidence, not a fabricated raw export or a new execution.

@@ -23,3 +23,29 @@ index=windows_soc earliest=-24h latest=now EventCode IN (4673,4674)
 | eval endpoint=coalesce(ComputerName,host)
 | search endpoint="SOC-WS01"
 | table _time endpoint EventCode
+
+``` Recorded privilege-use search; 4674 was observed. No 4673 detection is claimed. ```
+index=windows_soc (EventCode=4673 OR EventCode=4674) earliest=-10m latest=now
+| table _time EventCode host user Message
+| sort -_time
+
+``` Recorded extraction from Spanish rendered events; the table was confirmed in the practice. ```
+``` Relative windows refer to the original live searches; use the original window for historical replay. ```
+``` Original identifiers are omitted. Scope to the same endpoint in a multi-host index and sanitize results before publication. ```
+index=windows_soc EventCode=4674 earliest=-30m latest=now
+| rex "Nombre de cuenta:\s+(?<user>\S+)"
+| rex "Id\. de proceso:\s+(?<process_id>0x[0-9A-Fa-f]+)"
+| rex "Nombre de proceso:\s+(?<process_name>[^\r\n]+)"
+| rex "Privilegios:\s+(?<privilege>[^\r\n]+)"
+| table _time EventCode user process_id process_name privilege host
+| sort -_time
+
+``` Recorded 30-minute correlation attempt: only 4674 appeared; no matching 4688. Earlier lsass startup is probable, not verified. ```
+index=windows_soc (EventCode=4674 OR EventCode=4688) earliest=-30m latest=now
+| rex "Id\. de proceso:\s+(?<priv_process_id>0x[0-9A-Fa-f]+)"
+| rex "Nombre de proceso:\s+(?<priv_process_name>[^\r\n]+)"
+| rex "Identificador del nuevo proceso:\s+(?<new_process_id>0x[0-9A-Fa-f]+)"
+| rex "Nombre del nuevo proceso:\s+(?<new_process_name>[^\r\n]+)"
+| search priv_process_id="0x4e8" OR new_process_id="0x4e8"
+| table _time EventCode priv_process_id priv_process_name new_process_id new_process_name host
+| sort _time
